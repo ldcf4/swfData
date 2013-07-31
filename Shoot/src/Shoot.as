@@ -1,12 +1,5 @@
 package
 {
-	import flash.display.Loader;
-	import flash.display.Sprite;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import flash.geom.Point;
-	import flash.net.URLRequest;
-	
 	import Box2D.Collision.Shapes.b2CircleShape;
 	import Box2D.Collision.Shapes.b2PolygonShape;
 	import Box2D.Common.Math.b2Vec2;
@@ -16,6 +9,15 @@ package
 	import Box2D.Dynamics.b2FixtureDef;
 	import Box2D.Dynamics.b2World;
 	
+	import config.ConfigALL;
+	
+	import flash.display.Loader;
+	import flash.display.Sprite;
+	import flash.events.Event;
+	import flash.events.MouseEvent;
+	import flash.geom.Point;
+	import flash.net.URLRequest;
+	
 	/***
 	 *
 	 *@author ludingchang 时间：2013-7-29 下午1:40:53
@@ -23,19 +25,10 @@ package
 	[SWF(frameRate="30",width="1024",height="1024")]
 	public class Shoot extends Sprite
 	{
-		private static const grivaty:b2Vec2=new b2Vec2(0,10);
-		private static const world_W:Number=750;
-		private static const world_H:Number=550;
-		private static const Impulse:Number=1000;
-		/**墙反弹力*/
-		private static const wall_R:Number=.9;
-		/**球反弹力*/
-		private static const ball_R:Number=.9;
-
 		private var world:b2World;
 		private var dbDraw:b2DebugDraw;
 		private var loader:Loader;
-		private var ui:Sprite;
+		private var _ui:Sprite;
 		private var ps:Vector.<Point>;
 
 		private var ball:b2Body;
@@ -51,11 +44,11 @@ package
 		{
 			init();
 			ui=loader.contentLoaderInfo.content as Sprite;
-			var i:int,len:int=ui.numChildren;
+			var i:int,len:int=_ui.numChildren;
 			var sp:Sprite;
 			for(i=0;i<len;i++)
 			{
-				sp=ui.getChildAt(i) as Sprite;
+				sp=_ui.getChildAt(i) as Sprite;
 				ps=PrintGraphicData.initData(sp);
 				createShapeByUI(sp.x,sp.y,ps);
 			}
@@ -69,8 +62,9 @@ package
 		}
 		private function init():void
 		{
-			world=new b2World(grivaty,true);
+			world=new b2World(ConfigALL.grivaty,true);
 			world.SetWarmStarting(true);
+			ConfigALL.world=world;
 			var debug:Sprite=new Sprite;
 			addChild(debug);
 			
@@ -91,7 +85,7 @@ package
 			var p2:b2Vec2=new b2Vec2(stage.mouseX/30,stage.mouseY/30);
 			p2.Subtract(p);
 			p2.Normalize();
-			p2.Multiply(Impulse);
+			p2.Multiply(ConfigALL.Impulse);
 			ball.ApplyImpulse(p2,ball.GetWorldCenter());
 			trace("ball fly");
 		}
@@ -121,13 +115,6 @@ package
 			fixD.restitution=.5;
 			body.CreateFixture(fixD);
 		}
-		private function crateSaveBox():void
-		{
-			createWall(world_W/2,50,world_W,100);//上
-			createWall(world_W/2,world_H-50,world_W,100);//下
-			createWall(50,world_H/2,100,world_H);//左
-			createWall(world_W-50,world_H/2,100,world_H);//右
-		}
 		
 		private function createBall():b2Body
 		{
@@ -140,7 +127,7 @@ package
 			var shape:b2CircleShape=new b2CircleShape(15/30);
 			var fixd:b2FixtureDef=new b2FixtureDef;
 			fixd.shape=shape;
-			fixd.restitution=ball_R;
+			fixd.restitution=ConfigALL.ball_R;
 			fixd.density=3;
 			body.CreateFixture(fixd);
 			return body;
@@ -160,7 +147,7 @@ package
 			shape.SetAsVector(vs,len-1);
 			var fixd:b2FixtureDef=new b2FixtureDef;
 			fixd.shape=shape;
-			fixd.restitution=wall_R;
+			fixd.restitution=ConfigALL.wall_R;
 			body.CreateFixture(fixd);
 		}
 	}

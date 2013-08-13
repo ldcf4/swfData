@@ -37,13 +37,13 @@ package
 		{
 			loader=new Loader;
 			loader.contentLoaderInfo.addEventListener(Event.COMPLETE,onLoadeCom);
-			loader.load(new URLRequest("ui/ui.swf"));
+			loader.load(new URLRequest("res/ui.swf"));
 		}
 		
 		protected function onLoadeCom(event:Event):void
 		{
 			init();
-			ui=loader.contentLoaderInfo.content as Sprite;
+			_ui=loader.contentLoaderInfo.content as Sprite;
 			var i:int,len:int=_ui.numChildren;
 			var sp:Sprite;
 			for(i=0;i<len;i++)
@@ -125,6 +125,8 @@ package
 			bdf.allowSleep=false;
 			var body:b2Body=world.CreateBody(bdf);
 			var shape:b2CircleShape=new b2CircleShape(15/30);
+//			var shape:b2PolygonShape=new b2PolygonShape;
+//			shape.SetAsArray([new b2Vec2(-1,-2),new b2Vec2(1,-2),new b2Vec2(0,-1)],3);
 			var fixd:b2FixtureDef=new b2FixtureDef;
 			fixd.shape=shape;
 			fixd.restitution=ConfigALL.ball_R;

@@ -11,13 +11,13 @@ package config
 	{
 		public static var world:b2World;
 		
-		public static const grivaty:b2Vec2=new b2Vec2(0,0);
+		public static const grivaty:b2Vec2=new b2Vec2(0,10);
 		public static const world_W:Number=750;
 		public static const world_H:Number=550;
 		public static const Impulse:Number=100;
 		/**墙反弹力*/
-		public static const wall_R:Number=1;
+		public static const wall_R:Number=.9;
 		/**球反弹力*/
-		public static const ball_R:Number=1;
+		public static const ball_R:Number=.9;
 	}
 }

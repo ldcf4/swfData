@@ -2,6 +2,7 @@ package config
 {
 	import Box2D.Collision.Shapes.b2PolygonShape;
 	import Box2D.Common.Math.b2Vec2;
+	import Box2D.Dynamics.Joints.b2RevoluteJoint;
 	import Box2D.Dynamics.Joints.b2RevoluteJointDef;
 	import Box2D.Dynamics.b2Body;
 	import Box2D.Dynamics.b2BodyDef;
@@ -18,10 +19,11 @@ package config
 	 */
 	public class ConfigManager
 	{
-		public static function parseConfig(sp:Sprite):void
+		public static function parseConfig(sp:MovieClip):void
 		{
-			for(var i:int=sp.numChildren;i>0;i--)
+			for(var i:int=sp.numChildren-1;i>=0;i--)
 			{
+				var mc:MovieClip=sp as MovieClip
 				var child:MovieClip=sp.getChildAt(i) as MovieClip;
 				if(child.hasOwnProperty("type"))
 				{
@@ -36,13 +38,14 @@ package config
 					parseStaticObj(child);
 			}
 		}
-		private static function parseStaticObj(sp:Sprite):void
+		private static function parseStaticObj(sp:MovieClip):void
 		{
 			createShapeByUI(sp,b2Body.b2_staticBody);
 		}
-		public static function parseFengche(sp:MovieClip):void
+		private static function parseFengche(sp:MovieClip):void
 		{
 			var fenche:b2Body=createShapeByUI(sp,b2Body.b2_dynamicBody);
+			fenche.SetSleepingAllowed(false);
 			var jont:b2RevoluteJointDef=new b2RevoluteJointDef;
 			jont.Initialize(ConfigALL.world.GetGroundBody(),fenche,fenche.GetWorldCenter());
 			jont.enableLimit=sp.enableAngle;
@@ -51,7 +54,15 @@ package config
 			jont.motorSpeed=sp.matorSpeed;
 			jont.upperAngle=sp.maxAngle;
 			jont.lowerAngle=sp.minAngle;
-			ConfigALL.world.CreateJoint(jont);
+			jont.collideConnected=true;
+			trace("jont.enableLimit="+ sp.enableAngle +
+				"\njont.enableMotor="+sp.enableMator +
+				"\njont.maxMotorTorque="+sp.maxMatorForce +
+				"\njont.motorSpeed="+sp.matorSpeed+
+				"\njont.upperAngle="+sp.maxAngle+
+				"\njont.lowerAngle="+sp.minAngle);
+			var j:b2RevoluteJoint=ConfigALL.world.CreateJoint(jont) as b2RevoluteJoint;
+			trace("jont is active "+j.IsActive())
 		}
 		private  static function createShapeByUI($ui:MovieClip,$type:int):b2Body
 		{
@@ -72,6 +83,7 @@ package config
 			fixd.shape=shape;
 			fixd.userData=$ui;
 			fixd.restitution=ConfigALL.wall_R;
+			fixd.density=.3;
 			body.CreateFixture(fixd);
 			return body;
 		}

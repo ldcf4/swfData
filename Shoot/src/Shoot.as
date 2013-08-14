@@ -10,8 +10,10 @@ package
 	import Box2D.Dynamics.b2World;
 	
 	import config.ConfigALL;
+	import config.ConfigManager;
 	
 	import flash.display.Loader;
+	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -28,7 +30,7 @@ package
 		private var world:b2World;
 		private var dbDraw:b2DebugDraw;
 		private var loader:Loader;
-		private var _ui:Sprite;
+		private var _ui:MovieClip;
 		private var ps:Vector.<Point>;
 
 		private var ball:b2Body;
@@ -43,15 +45,8 @@ package
 		protected function onLoadeCom(event:Event):void
 		{
 			init();
-			_ui=loader.contentLoaderInfo.content as Sprite;
-			var i:int,len:int=_ui.numChildren;
-			var sp:Sprite;
-			for(i=0;i<len;i++)
-			{
-				sp=_ui.getChildAt(i) as Sprite;
-				ps=PrintGraphicData.initData(sp);
-				createShapeByUI(sp.x,sp.y,ps);
-			}
+			_ui=loader.contentLoaderInfo.content as MovieClip;
+			ConfigManager.parseConfig(_ui);
 			
 			initEvenListener();
 		}
@@ -65,17 +60,16 @@ package
 			world=new b2World(ConfigALL.grivaty,true);
 			world.SetWarmStarting(true);
 			ConfigALL.world=world;
+			trace("create world");
 			var debug:Sprite=new Sprite;
 			addChild(debug);
 			
 			dbDraw=new b2DebugDraw;
 			dbDraw.SetSprite(debug);
 			dbDraw.SetDrawScale(30);
-			dbDraw.SetFlags(b2DebugDraw.e_shapeBit|b2DebugDraw.e_centerOfMassBit);
+			dbDraw.SetFlags(b2DebugDraw.e_shapeBit|b2DebugDraw.e_centerOfMassBit|b2DebugDraw.e_jointBit);
 			world.SetDebugDraw(dbDraw);
 			
-//			crateSaveBox();
-//			createWall(world_W/2,world_H/2,world_W/4,10);
 			ball=createBall();
 		}
 		
@@ -95,26 +89,6 @@ package
 			world.DrawDebugData();
 		}
 		
-		/**
-		 * 
-		 * @param $x 中点X位置
-		 * @param $y 中点Y位置
-		 * @param $w 矩形宽
-		 * @param $h 矩形高
-		 * 
-		 */		
-		private function createWall($x:Number,$y:Number,$w:Number,$h:Number):void
-		{
-			var bdf:b2BodyDef=new b2BodyDef;
-			bdf.position=new b2Vec2($x/30,$y/30);
-			var body:b2Body=world.CreateBody(bdf);
-			var shape:b2PolygonShape=new b2PolygonShape;
-			shape.SetAsBox($w/2/30,$h/2/30);
-			var fixD:b2FixtureDef=new b2FixtureDef;
-			fixD.shape=shape;
-			fixD.restitution=.5;
-			body.CreateFixture(fixD);
-		}
 		
 		private function createBall():b2Body
 		{
@@ -133,24 +107,6 @@ package
 			fixd.density=3;
 			body.CreateFixture(fixd);
 			return body;
-		}
-		private function createShapeByUI($x:Number,$y:Number,ps:Vector.<Point>):void
-		{
-			var bdf:b2BodyDef=new b2BodyDef;
-			bdf.position.Set($x/30,$y/30);
-			var body:b2Body=world.CreateBody(bdf);
-			var i:int,len:int=ps.length;
-			var vs:Vector.<b2Vec2>=new Vector.<b2Vec2>(len-1);
-			for(i=0;i<len-1;i++)
-			{
-				vs[i]=new b2Vec2(ps[i].x/30,ps[i].y/30);
-			}
-			var shape:b2PolygonShape=new b2PolygonShape;
-			shape.SetAsVector(vs,len-1);
-			var fixd:b2FixtureDef=new b2FixtureDef;
-			fixd.shape=shape;
-			fixd.restitution=ConfigALL.wall_R;
-			body.CreateFixture(fixd);
 		}
 	}
 }

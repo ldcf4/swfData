@@ -1,13 +1,15 @@
 package config.items
 {
+	import config.TypeConfig;
+
 	/***
-	 *
+	 *风车（旋转关节）
 	 *@author ludingchang 时间：2013-7-31 下午5:01:01
 	 */
 	public class fengche
 	{
 		[Inspectable(defaultValue="1",name="1.类型")]
-		public var type:int;
+		public var type:int=TypeConfig.TypeFengche;
 		[Inspectable(defaultValue="false",name="2.限制角度")]
 		public var enableAngle:Boolean;
 		[Inspectable(defaultValue="0",name="4.角度最大值")]
@@ -20,5 +22,7 @@ package config.items
 		public var matorSpeed:Number;
 		[Inspectable(defaultValue="0",name="6.马达最大扭距")]
 		public var maxMatorForce:Number;
+		[Inspectable(defaultValue="请修改",name="8.id")]
+		public var id:String
 	}
 }

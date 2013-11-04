@@ -32,6 +32,12 @@ package config
 						case TypeConfig.TypeFengche:
 							parseFengche(child);
 							break;
+						case TypeConfig.TypeStartpoint:
+							ConfigALL.start_point=createShapeByUI(child,b2Body.b2_staticBody,true);
+							break;
+						case TypeConfig.TypeEndpoint:
+							ConfigALL.end_point=createShapeByUI(child,b2Body.b2_staticBody,true);
+							break;
 					}
 				}
 				else
@@ -64,7 +70,7 @@ package config
 			var j:b2RevoluteJoint=ConfigALL.world.CreateJoint(jont) as b2RevoluteJoint;
 			trace("jont is active "+j.IsActive())
 		}
-		private  static function createShapeByUI($ui:MovieClip,$type:int):b2Body
+		private  static function createShapeByUI($ui:MovieClip,$type:int,$isSensor:Boolean=false):b2Body
 		{
 			var bdf:b2BodyDef=new b2BodyDef;
 			bdf.position.Set($ui.x/30,$ui.y/30);
@@ -84,6 +90,7 @@ package config
 			fixd.userData=$ui;
 			fixd.restitution=ConfigALL.wall_R;
 			fixd.density=.3;
+			fixd.isSensor=$isSensor;
 			body.CreateFixture(fixd);
 			return body;
 		}

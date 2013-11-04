@@ -11,6 +11,7 @@ package
 	
 	import config.ConfigALL;
 	import config.ConfigManager;
+	import config.TypeConfig;
 	
 	import flash.display.Loader;
 	import flash.display.MovieClip;
@@ -48,6 +49,7 @@ package
 			_ui=loader.contentLoaderInfo.content as MovieClip;
 			ConfigManager.parseConfig(_ui);
 			
+			ball=createBall();
 			initEvenListener();
 		}
 		private function initEvenListener():void
@@ -70,7 +72,6 @@ package
 			dbDraw.SetFlags(b2DebugDraw.e_shapeBit|b2DebugDraw.e_centerOfMassBit|b2DebugDraw.e_jointBit);
 			world.SetDebugDraw(dbDraw);
 			
-			ball=createBall();
 		}
 		
 		protected function onClick(event:MouseEvent):void
@@ -94,7 +95,7 @@ package
 		{
 			var bdf:b2BodyDef=new b2BodyDef;
 			bdf.type=b2Body.b2_dynamicBody;
-			bdf.position.Set(100/30,500/30);
+			bdf.position.SetV(ConfigALL.start_point.GetWorldCenter());
 			bdf.fixedRotation=false;
 			bdf.allowSleep=false;
 			var body:b2Body=world.CreateBody(bdf);
@@ -105,6 +106,7 @@ package
 			fixd.shape=shape;
 			fixd.restitution=ConfigALL.ball_R;
 			fixd.density=3;
+			fixd.userData={type:TypeConfig.TypeBall};
 			body.CreateFixture(fixd);
 			return body;
 		}

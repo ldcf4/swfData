@@ -1,6 +1,7 @@
 package config
 {
 	import Box2D.Common.Math.b2Vec2;
+	import Box2D.Dynamics.b2Body;
 	import Box2D.Dynamics.b2World;
 
 	/***
@@ -10,6 +11,8 @@ package config
 	public class ConfigALL
 	{
 		public static var world:b2World;
+		public static var start_point:b2Body;
+		public static var end_point:b2Body;
 		
 		public static const grivaty:b2Vec2=new b2Vec2(0,10);
 		public static const world_W:Number=750;
